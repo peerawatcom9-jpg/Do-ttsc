@@ -1,1 +1,307 @@
+-- ========================================================
+-- ⚡🌳 PEERAWAT — ป่าต้นไม้โดนฟ้าผ่า
+-- ✅ รูปปกเปลวไฟ | ลากได้ | เปิด-ปิดได้
+-- ✅ เก็บต้นไม้ก่อนโดนฟ้าผ่าอัตโนมัติ
+-- ✅ ค่าย PEERAWAT | ใช้ได้ทุกแมพ
+-- ========================================================
+
+local UIS = game:GetService("UserInputService")
+local Tween = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local LP = Players.LocalPlayer
+
+-- ลบเก่า
+if game.CoreGui:FindFirstChild("PEERAWAT_LightningForest") then
+    game.CoreGui.PEERAWAT_LightningForest:Destroy()
+end
+
+-- ====================== 🎨 สร้าง GUI ======================
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "PEERAWAT_LightningForest"
+Gui.ResetOnSpawn = false
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Gui.Parent = game.CoreGui
+
+-- 🔥 ปุ่มลอยรูปเปลวไฟ — ลากได้
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 70, 0, 70)
+ToggleBtn.Position = UDim2.new(0.01, 0, 0.5, -35)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 0)
+ToggleBtn.Text = "🔥"
+ToggleBtn.TextSize = 38
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.AutoLocalize = false
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = Gui
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+
+-- 🪟 หน้าต่างหลัก — ลากได้
+local MainWin = Instance.new("Frame")
+MainWin.Size = UDim2.new(0, 400, 0, 480)
+MainWin.Position = UDim2.new(0.05, 0, 0.1, 0)
+MainWin.BackgroundColor3 = Color3.fromRGB(25, 10, 5)
+MainWin.BorderSizePixel = 4
+MainWin.BorderColor3 = Color3.fromRGB(255, 80, 0)
+MainWin.ClipsDescendants = true
+MainWin.Visible = false
+MainWin.Active = true
+MainWin.Draggable = true
+MainWin.Parent = Gui
+Instance.new("UICorner", MainWin).CornerRadius = UDim.new(0, 18)
+
+-- 🖼️ ปกเปลวไฟ
+local FireBanner = Instance.new("Frame")
+FireBanner.Size = UDim2.new(1, 0, 0, 90)
+FireBanner.BackgroundColor3 = Color3.fromRGB(255, 50, 0)
+FireBanner.BackgroundTransparency = 0.1
+FireBanner.Parent = MainWin
+Instance.new("UICorner", FireBanner).CornerRadius = UDim.new(0, 18)
+
+local BannerText = Instance.new("TextLabel")
+BannerText.Size = UDim2.new(1, 0, 1, 0)
+BannerText.BackgroundTransparency = 1
+BannerText.Text = "⚡🌳 ป่าต้นไม้โดนฟ้าผ่า"
+BannerText.TextColor3 = Color3.fromRGB(255, 220, 100)
+BannerText.TextSize = 24
+BannerText.Font = Enum.Font.GothamBold
+BannerText.Parent = FireBanner
+
+local BrandText = Instance.new("TextLabel")
+BrandText.Size = UDim2.new(1, 0, 0, 25)
+BrandText.Position = UDim2.new(0, 0, 0.82, 0)
+BrandText.BackgroundTransparency = 1
+BrandText.Text = "🔥 ค่าย PEERAWAT 🔥"
+BrandText.TextColor3 = Color3.fromRGB(255, 150, 0)
+BrandText.TextSize = 13
+BrandText.Font = Enum.Font.GothamBold
+BrandText.Parent = FireBanner
+
+-- หัวเมนู
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 45)
+Header.Position = UDim2.new(0, 0, 0, 90)
+Header.BackgroundColor3 = Color3.fromRGB(50, 20, 5)
+Header.Parent = MainWin
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -55, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "🌲 ระบบจัดการต้นไม้"
+Title.TextColor3 = Color3.fromRGB(255, 150, 0)
+Title.TextSize = 16
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 40, 0, 40)
+CloseBtn.Position = UDim2.new(1, -45, 0.5, -20)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 0)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.AutoLocalize = false
+CloseBtn.Parent = Header
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 8)
+
+-- กล่องเนื้อหา
+local Scroll = Instance.new("ScrollingFrame")
+Scroll.Size = UDim2.new(1, -16, 1, -150)
+Scroll.Position = UDim2.new(0, 8, 0, 140)
+Scroll.BackgroundTransparency = 1
+Scroll.ScrollBarThickness = 6
+Scroll.ScrollBarColor3 = Color3.fromRGB(255, 120, 0)
+Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Scroll.CanvasSize = UDim2.new(0,0,0,0)
+Scroll.Parent = MainWin
+
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0, 10)
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Layout.Parent = Scroll
+
+-- ====================== 📋 ตัวแปรระบบ ======================
+local AutoCollect = false
+local LightningWarning = {}
+
+-- ====================== 📋 ฟังก์ชันเมนู ======================
+local Functions = {
+    {ID=1, Emoji="⚡", Name="เปิดฟ้าผ่าในแมพ", Key="Lightning"},
+    {ID=2, Emoji="🌲", Name="สร้างต้นไม้ทั้งหมด", Key="SpawnTrees"},
+    {ID=3, Emoji="🪵", Name="เก็บต้นไม้อัตโนมัติ", Key="AutoCollect"},
+    {ID=4, Emoji="⚠️", Name="แจ้งเตือนก่อนฟ้าผ่า", Key="Warning"},
+    {ID=5, Emoji="🔥", Name="ไฟไหม้ต้นไม้", Key="FireEffect"},
+    {ID=6, Emoji="💨", Name="เอฟเฟกต์ควัน", Key="Smoke"},
+    {ID=7, Emoji="🎯", Name="ล็อกเป้าต้นไม้ใกล้ผ่า", Key="LockTarget"},
+    {ID=8, Emoji="🏃", Name="วิ่งไปเก็บอัตโนมัติ", Key="AutoRun"},
+    {ID=9, Emoji="📦", Name="เก็บของที่ตก", Key="Pickup"},
+    {ID=10,Emoji="🗺️", Name="แสดงตำแหน่งต้นไม้", Key="ShowPos"}
+}
+
+local Enabled = {}
+for _, func in ipairs(Functions) do
+    Enabled[func.Key] = false
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, -12, 0, 44)
+    Btn.BackgroundColor3 = Color3.fromRGB(60, 30, 10)
+    Btn.Text = func.ID..". "..func.Emoji.." "..func.Name.." — ❌ ปิด"
+    Btn.TextColor3 = Color3.fromRGB(255, 180, 80)
+    Btn.TextSize = 14
+    Btn.Font = Enum.Font.GothamMedium
+    Btn.AutoLocalize = false
+    Btn.Parent = Scroll
+    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 10)
+
+    Btn.MouseButton1Click:Connect(function()
+        Enabled[func.Key] = not Enabled[func.Key]
+        local status = Enabled[func.Key] and "✅ เปิด" or "❌ ปิด"
+        Btn.Text = func.ID..". "..func.Emoji.." "..func.Name.." — "..status
+        Btn.BackgroundColor3 = Enabled[func.Key] and Color3.fromRGB(255, 100, 0) or Color3.fromRGB(60, 30, 10)
+        if func.Key == "AutoCollect" then AutoCollect = Enabled[func.Key] end
+    end)
+end
+
+-- ====================== 🔑 เปิด-ปิดเมนู ======================
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainWin.Visible = not MainWin.Visible
+end)
+CloseBtn.MouseButton1Click:Connect(function()
+    MainWin.Visible = false
+end)
+
+-- ====================== 🌳 ระบบต้นไม้และฟ้าผ่า ======================
+local Trees = {}
+
+-- สร้างต้นไม้
+local function SpawnTrees()
+    for i = 1, 50 do
+        local Tree = Instance.new("Part")
+        Tree.Name = "Tree_"..i
+        Tree.Size = Vector3.new(3, math.random(12, 20), 3)
+        Tree.Position = Vector3.new(math.random(-120, 120), Tree.Size.Y/2, math.random(-120, 120))
+        Tree.Anchored = true
+        Tree.Color = Color3.fromRGB(45, 25, 10)
+        Tree.Material = Enum.Material.Wood
+        Tree.Parent = Workspace
+
+        local Leaves = Instance.new("Part")
+        Leaves.Size = Vector3.new(math.random(6, 10), math.random(5, 8), math.random(6, 10))
+        Leaves.Position = Tree.Position + Vector3.new(0, Tree.Size.Y/2 + Leaves.Size.Y/2, 0)
+        Leaves.Anchored = true
+        Leaves.Color = Color3.fromRGB(20, 80, 20)
+        Leaves.Material = Enum.Material.Grass
+        Leaves.Parent = Workspace
+
+        table.insert(Trees, {Trunk=Tree, Foliage=Leaves, Warned=false, Struck=false})
+    end
+end
+
+-- ฟ้าผ่า
+local function StrikeLightning(treeData)
+    local Tree = treeData.Trunk
+    treeData.Struck = true
+
+    -- แสงฟ้าแลบ
+    local Light = Instance.new("PointLight")
+    Light.Brightness = 15
+    Light.Range = 40
+    Light.Color = Color3.fromRGB(255, 255, 100)
+    Light.Parent = Tree
+    game.Lighting.Brightness = 4
+    task.wait(0.1)
+    game.Lighting.Brightness = 2
+
+    -- ต้นไม้ไหม้
+    Tree.Color = Color3.fromRGB(30, 20, 10)
+    Tree.Material = Enum.Material.Asphalt
+
+    -- ไฟไหม้
+    local Fire = Instance.new("Fire")
+    Fire.Size = 8
+    Fire.Heat = 6
+    Fire.Color = Color3.fromRGB(255, 80, 0)
+    Fire.SecondaryColor = Color3.fromRGB(255, 200, 0)
+    Fire.Parent = Tree
+
+    task.wait(3)
+    Fire:Destroy()
+    Light:Destroy()
+end
+
+-- แจ้งเตือนก่อนฟ้าผ่า
+local function WarnBeforeStrike(treeData)
+    if treeData.Warned then return end
+    treeData.Warned = true
+
+    local Tree = treeData.Trunk
+    local Warning = Instance.new("PointLight")
+    Warning.Brightness = 8
+    Warning.Range = 20
+    Warning.Color = Color3.fromRGB(255, 200, 0)
+    Warning.Parent = Tree
+
+    table.insert(LightningWarning, Tree)
+
+    -- แจ้งเตือน
+    print("⚠️ ฟ้าจะผ่าต้นไม้ที่: "..tostring(Tree.Position))
+
+    -- ถ้าเปิดเก็บอัตโนมัติ → วิ่งไปเก็บ
+    if AutoCollect and LP.Character then
+        local Root = LP.Character:FindFirstChild("HumanoidRootPart")
+        if Root then
+            Root.CFrame = CFrame.new(Tree.Position + Vector3.new(0, 5, 0))
+        end
+    end
+
+    task.wait(3) -- เวลาเตรียมตัวก่อนโดนผ่า
+    Warning:Destroy()
+    table.remove(LightningWarning, table.find(LightningWarning, Tree))
+    StrikeLightning(treeData)
+end
+
+-- สุ่มฟ้าผ่า
+task.spawn(function()
+    while true do
+        task.wait(math.random(8, 15))
+        if Enabled.Lightning and #Trees > 0 then
+            local RandomTree = Trees[math.random(1, #Trees)]
+            if not RandomTree.Struck then
+                WarnBeforeStrike(RandomTree)
+            end
+        end
+    end
+end)
+
+-- สร้างต้นไม้อัตโนมัติเมื่อเปิด
+SpawnTrees()
+
+-- ====================== 🔄 ลูปหลัก ======================
+RunService.Heartbeat:Connect(function()
+    if not AutoCollect then return end
+    local Char = LP.Character
+    if not Char then return end
+    local Root = Char:FindFirstChild("HumanoidRootPart")
+    if not Root then return end
+
+    -- เก็บต้นไม้ที่กำลังจะโดนผ่า
+    for _, Tree in pairs(LightningWarning) do
+        if Tree and Tree:IsDescendantOf(Workspace) then
+            local Dist = (Root.Position - Tree.Position).Magnitude
+            if Dist < 15 then
+                -- เก็บได้แล้ว
+                Tree:Destroy()
+                print("✅ เก็บต้นไม้ก่อนโดนฟ้าผ่า!")
+            end
+        end
+    end
+end)
+
+print("⚡🌳 PEERAWAT — ป่าต้นไม้โดนฟ้าผ่า พร้อมใช้งาน!")
+print("👉 กดปุ่ม 🔥 เปิดเมนู | ลากได้ทั้งปุ่มและหน้าต่าง")
+print("⚠️ ระบบแจ้งเตือนก่อนฟ้าผ่า + เก็บอัตโนมัติเมื่อเปิด!")
 
